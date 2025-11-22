@@ -86,7 +86,7 @@ export default function NGOHeroSection() {
             >
               <div className="relative w-full max-w-lg">
                 <img
-                  src="/hero-image.png"
+                  src="/hero_img.png"
                   alt="Charity and Donation"
                   className="w-full h-auto object-contain rounded-lg"
                 />

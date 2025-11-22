@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import Image from 'next/image';
-import teamPhoto from '@/public/about-1.jpg';
+import teamPhoto from '@/public/About_1.png';
 
 export default function AboutUsPremium() {
   return (
@@ -72,7 +72,7 @@ export default function AboutUsPremium() {
           >
             {[
               "At Universal Muslim Foundation, we are a young, passionate team on a sacred mission to make giving Zakat and Sadaqah simple, transparent, and deeply rewarding.",
-              "Every rupee you entrust to us is handled with the utmost care, following strict Shariah guidelines and a 100% donation policy meaning not a single penny is used for admin on your Zakat or Sadaqah.",
+              "Every rupee you entrust to us is handled with the utmost care, following strict Shariah guidelines and a 100% donation policy meaning not a single penny is used for Universal Muslim Foundation team on your Zakat or Sadaqah.",
               "From feeding families in crisis to sponsoring orphans and building clean water solutions we exist to turn your generosity into real, lasting change.",
               "This is more than charity. This is a partnership in goodness. A step toward Jannah. Together."
             ].map((text, i) => (
