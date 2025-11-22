@@ -1,0 +1,129 @@
+'use client';
+
+import React, { useState } from "react";
+import { CheckCircle2, Heart, Users, Globe } from "lucide-react";
+import { motion } from "framer-motion";
+import AnimatedDonateMockup from "./AnimatedDonateMockup";
+
+export default function NGOHeroSection() {
+  const [donationAmount, setDonationAmount] = useState("50");
+
+  return (
+    <div id='hero' className="min-h-screen bg-white flex flex-col relative">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5 pointer-events-none">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M50 50L80 20L50 50L20 80L50 50Z' fill='%230066cc' fill-opacity='0.2'/%3E%3C/svg%3E")`,
+            backgroundSize: "120px 120px",
+          }}
+        />
+      </div>
+
+      {/* Hero Section */}
+      <div className="flex-1 flex items-center justify-center relative overflow-hidden py-12 lg:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 xl:gap-20">
+            
+            {/* Left Side - Content */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1 }}
+              className="flex-1 text-center lg:text-left w-full"
+            >
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="text-4xl sm:text-5xl md:text-6xl lg:text-5xl xl:text-6xl font-bold text-gray-900 leading-tight mb-6"
+              >
+                Together We Can
+                <br className="hidden sm:block" />
+                <span className="text-emerald-700">Change The World</span>
+              </motion.h1>
+
+              {/* Hadees Section */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.4 }}
+                className="mb-8 max-w-2xl mx-auto lg:mx-0"
+              >
+                <div className="bg-emerald-50 rounded-2xl p-6 sm:p-8 border border-emerald-100">
+                  <p className="text-gray-900 text-lg sm:text-xl lg:text-2xl leading-relaxed text-right font-arabic mb-3">
+                    "الزَّكَاةُ تُطَهِّرُ الْمَالَ وَتُرَبِّي الْعِبَادَةَ"
+                  </p>
+                  <p className="text-gray-700 text-base sm:text-lg leading-relaxed mb-2">
+                    "Zakat purifies wealth and nurtures worship"
+                  </p>
+                  <p className="text-gray-500 text-sm">- Islamic Teaching</p>
+                </div>
+              </motion.div>
+
+              {/* Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.6 }}
+                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10"
+              >
+                <button className="bg-emerald-800 text-white px-8 py-4 rounded-full font-semibold hover:bg-emerald-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 text-base sm:text-lg">
+                  <Heart className="w-5 h-5" />
+                  Donate Now
+                </button>
+                <button className="border-2 border-emerald-600 text-emerald-600 px-8 py-4 rounded-full font-semibold hover:bg-emerald-50 transition-all duration-300 text-base sm:text-lg">
+                  Learn More
+                </button>
+              </motion.div>
+
+              {/* Stats */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.8 }}
+                className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 justify-center lg:justify-start max-w-2xl mx-auto lg:mx-0"
+              >
+                <div className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                  <div className="bg-green-100 rounded-full p-2 flex-shrink-0">
+                    <CheckCircle2 className="w-5 h-5 text-green-500" />
+                  </div>
+                  <span className="text-gray-700 font-semibold text-sm sm:text-base">100% Trustable</span>
+                </div>
+                <div className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                  <div className="bg-emerald-100 rounded-full p-2 flex-shrink-0">
+                    <Users className="w-5 h-5 text-emerald-500" />
+                  </div>
+                  <span className="text-gray-700 font-semibold text-sm sm:text-base">Full Transparency</span>
+                </div>
+                <div className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                  <div className="bg-purple-100 rounded-full p-2 flex-shrink-0">
+                    <Globe className="w-5 h-5 text-purple-500" />
+                  </div>
+                  <span className="text-gray-700 font-semibold text-sm sm:text-base">Global Impact</span>
+                </div>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Side - Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="flex-1 flex items-center justify-center w-full"
+            >
+              <div className="relative w-full max-w-lg">
+                <img
+                  src="/hero-image.png"
+                  alt="Charity and Donation"
+                  className="w-full h-auto object-contain rounded-lg"
+                />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
