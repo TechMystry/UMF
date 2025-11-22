@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { CheckCircle2, Heart, Users, Globe } from "lucide-react";
 import { motion } from "framer-motion";
+
 export default function NGOHeroSection() {
   const [donationAmount, setDonationAmount] = useState("50");
 
@@ -22,14 +23,30 @@ export default function NGOHeroSection() {
       {/* Hero Section */}
       <div className="flex-1 flex items-center justify-center relative overflow-hidden py-12 lg:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          {/* Mobile: Image First → Content Below | Desktop: Side by Side */}
           <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 xl:gap-20">
-            
-            {/* Left Side - Content */}
+
+            {/* RIGHT SIDE - IMAGE (Appears FIRST on Mobile) */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+              className="flex-1 flex items-center justify-center w-full order-1 lg:order-2"
+            >
+              <div className="relative w-full max-w-lg">
+                <img
+                  src="/hero_img.png"
+                  alt="Charity and Donation"
+                                  />
+              </div>
+            </motion.div>
+
+            {/* LEFT SIDE - CONTENT (Appears BELOW image on Mobile) */}
             <motion.div
               initial={{ opacity: 0, x: -50 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1 }}
-              className="flex-1 text-center lg:text-left w-full"
+              className="flex-1 text-center lg:text-left w-full order-2 lg:order-1"
             >
               <motion.h1
                 initial={{ opacity: 0, y: 30 }}
@@ -75,22 +92,6 @@ export default function NGOHeroSection() {
                   Learn More
                 </button>
               </motion.div>
-            </motion.div>
-
-            {/* Right Side - Image */}
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="flex-1 flex items-center justify-center w-full"
-            >
-              <div className="relative w-full max-w-lg">
-                <img
-                  src="/hero_img.png"
-                  alt="Charity and Donation"
-                  className="w-full h-auto object-contain rounded-lg"
-                />
-              </div>
             </motion.div>
           </div>
         </div>

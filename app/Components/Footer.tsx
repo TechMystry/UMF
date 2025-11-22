@@ -118,22 +118,22 @@ export default function Footer() {
       </div>
 
       {/* BIG TEXT — Moved UP, perfect single line */}
-<div className="absolute inset-x-0 bottom-24 md:bottom-32 text-center">
-  <h1
-    className="text-white font-black tracking-tighter leading-none inline-block"
-    style={{
-      fontSize: 'clamp(2rem, 6.8vw, 6.8rem)',
-      letterSpacing: '-0.04em',
-      textShadow: '0 12px 40px rgba(0,0,0,0.95)',
-      whiteSpace: 'nowrap',
-      transform: 'translateX(-0.4%)',   // ← This moves it left by ~1 letter
-      maxWidth: '100vw',
-      overflow: 'hidden',
-    }}
-  >
-    Universal Muslim Foundation
-  </h1>
-</div>
+      <div className="hidden lg:block absolute inset-x-0 bottom-24 md:bottom-32 text-center">
+        <h1
+          className="text-white font-black tracking-tighter leading-none inline-block"
+          style={{
+            fontSize: 'clamp(2rem, 6.8vw, 6.8rem)',
+            letterSpacing: '-0.04em',
+            textShadow: '0 12px 40px rgba(0,0,0,0.95)',
+            whiteSpace: 'nowrap',
+            transform: 'translateX(-0.4%)',   
+            maxWidth: '100vw',
+            overflow: 'hidden',
+          }}
+        >
+          Universal Muslim Foundation
+        </h1>
+      </div>
 
       {/* Back to Top */}
       <motion.button
