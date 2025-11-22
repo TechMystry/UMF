@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Heart,
   ArrowRight,
@@ -9,10 +9,25 @@ import {
   Shield,
   X as XIcon,
   CheckCircle,
+  Loader2,
 } from 'lucide-react';
+
+// Types for gold and silver API response
+interface GoldPriceData {
+  price: number;
+  currency: string;
+}
+
+interface SilverPriceData {
+  price: number;
+  currency: string;
+}
 
 export default function CTA() {
   const [isModalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [goldPrice, setGoldPrice] = useState<string>('6000');
+  const [silverPrice, setSilverPrice] = useState<string>('80');
 
   // Zakat form state
   const [cash, setCash] = useState<string>('0');
@@ -21,8 +36,6 @@ export default function CTA() {
   const [businessAssets, setBusinessAssets] = useState<string>('0');
   const [goldGrams, setGoldGrams] = useState<string>('0');
   const [silverGrams, setSilverGrams] = useState<string>('0');
-  const [goldPrice, setGoldPrice] = useState<string>('6000');
-  const [silverPrice, setSilverPrice] = useState<string>('80');
   const [debts, setDebts] = useState<string>('0');
 
   // Nisab (gold-based default)
@@ -38,6 +51,54 @@ export default function CTA() {
     isAboveNisab: boolean;
   }>(null);
 
+  // Fetch real gold and silver prices
+  const fetchGoldPrice = async (): Promise<number> => {
+    try {
+      // Using a free gold price API (example - you might need to replace with a working free API)
+      const response = await fetch('https://api.metals.live/v1/spot/gold');
+      const data = await response.json();
+      return data[0]?.price || 6000; // Fallback to 6000 if API fails
+    } catch (error) {
+      console.error('Error fetching gold price:', error);
+      return 6000; // Default fallback price
+    }
+  };
+
+  const fetchSilverPrice = async (): Promise<number> => {
+    try {
+      // Using a free silver price API (example - you might need to replace with a working free API)
+      const response = await fetch('https://api.metals.live/v1/spot/silver');
+      const data = await response.json();
+      return data[0]?.price || 80; // Fallback to 80 if API fails
+    } catch (error) {
+      console.error('Error fetching silver price:', error);
+      return 80; // Default fallback price
+    }
+  };
+
+  const fetchMarketPrices = async () => {
+    setLoading(true);
+    try {
+      const [gold, silver] = await Promise.all([
+        fetchGoldPrice(),
+        fetchSilverPrice()
+      ]);
+      
+      setGoldPrice(gold.toString());
+      setSilverPrice(silver.toString());
+    } catch (error) {
+      console.error('Error fetching market prices:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen) {
+      fetchMarketPrices();
+    }
+  }, [isModalOpen]);
+
   const parseNumber = (val: string) => {
     const n = Number(val.toString().replace(/,/g, '').trim());
     return Number.isFinite(n) ? n : 0;
@@ -47,40 +108,47 @@ export default function CTA() {
     return amount.toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 });
   };
 
-  const calculateZakat = (e?: React.FormEvent) => {
-    e?.preventDefault();
+  // Live calculation effect
+  useEffect(() => {
+    const calculateZakat = () => {
+      const c = parseNumber(cash);
+      const b = parseNumber(bank);
+      const inv = parseNumber(investments);
+      const bus = parseNumber(businessAssets);
+      const gGrams = parseNumber(goldGrams);
+      const sGrams = parseNumber(silverGrams);
+      const gPrice = parseNumber(goldPrice);
+      const sPrice = parseNumber(silverPrice);
+      const d = parseNumber(debts);
+      const nisabG = parseNumber(nisabGrams);
 
-    const c = parseNumber(cash);
-    const b = parseNumber(bank);
-    const inv = parseNumber(investments);
-    const bus = parseNumber(businessAssets);
-    const gGrams = parseNumber(goldGrams);
-    const sGrams = parseNumber(silverGrams);
-    const gPrice = parseNumber(goldPrice);
-    const sPrice = parseNumber(silverPrice);
-    const d = parseNumber(debts);
-    const nisabG = parseNumber(nisabGrams);
+      const goldValue = gGrams * gPrice;
+      const silverValue = sGrams * sPrice;
 
-    const goldValue = gGrams * gPrice;
-    const silverValue = sGrams * sPrice;
+      const totalAssets = c + b + inv + bus + goldValue + silverValue;
+      const totalLiabilities = d;
 
-    const totalAssets = c + b + inv + bus + goldValue + silverValue;
-    const totalLiabilities = d;
+      const netZakatable = Math.max(0, totalAssets - totalLiabilities);
+      const nisabValue = useGoldNisab ? nisabG * gPrice : nisabG * sPrice;
+      const isAboveNisab = netZakatable >= nisabValue;
+      const zakatDue = isAboveNisab ? +(netZakatable * 0.025) : 0;
 
-    const netZakatable = Math.max(0, totalAssets - totalLiabilities);
-    const nisabValue = useGoldNisab ? nisabG * gPrice : nisabG * sPrice;
-    const isAboveNisab = netZakatable >= nisabValue;
-    const zakatDue = isAboveNisab ? +(netZakatable * 0.025) : 0;
+      setResult({
+        totalAssets,
+        totalLiabilities,
+        netZakatable,
+        zakatDue,
+        nisabValue,
+        isAboveNisab,
+      });
+    };
 
-    setResult({
-      totalAssets,
-      totalLiabilities,
-      netZakatable,
-      zakatDue,
-      nisabValue,
-      isAboveNisab,
-    });
-  };
+    calculateZakat();
+  }, [
+    cash, bank, investments, businessAssets, 
+    goldGrams, silverGrams, goldPrice, silverPrice, 
+    debts, nisabGrams, useGoldNisab
+  ]);
 
   const resetForm = () => {
     setCash('0');
@@ -89,12 +157,17 @@ export default function CTA() {
     setBusinessAssets('0');
     setGoldGrams('0');
     setSilverGrams('0');
-    setGoldPrice('6000');
-    setSilverPrice('80');
     setDebts('0');
     setNisabGrams('87.48');
     setUseGoldNisab(true);
     setResult(null);
+    fetchMarketPrices(); // Refresh prices on reset
+  };
+
+  const handlePayNow = () => {
+    // Here you would integrate with your payment gateway
+    alert('Redirecting to payment gateway...');
+    // window.location.href = '/payment'; // Uncomment and set your payment route
   };
 
   return (
@@ -201,9 +274,9 @@ export default function CTA() {
             aria-hidden="true"
           />
 
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto overflow-auto">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl mx-auto overflow-auto max-h-[90vh]">
             {/* header */}
-            <div className="flex items-center justify-between p-6 border-b">
+            <div className="flex items-center justify-between p-6 border-b sticky top-0 bg-white z-10">
               <h3 className="text-lg font-semibold text-black">Zakat Calculator</h3>
               <button
                 onClick={() => setModalOpen(false)}
@@ -215,10 +288,43 @@ export default function CTA() {
             </div>
 
             {/* body - HORIZONTAL FORM (responsive) */}
-            <form onSubmit={calculateZakat} className="p-6 space-y-4">
-              <p className="text-sm text-black">
-                Enter your assets and liabilities. Gold/silver price per gram should be current market rates.
-              </p>
+            <div className="p-6 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                <p className="text-sm text-black flex-1">
+                  Enter your assets and liabilities. Calculations update automatically as you type.
+                </p>
+                
+                {/* Refresh Prices Button */}
+                <button
+                  type="button"
+                  onClick={fetchMarketPrices}
+                  disabled={loading}
+                  className="flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-2 rounded-md text-sm font-medium hover:bg-blue-200 transition disabled:opacity-50"
+                >
+                  {loading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : null}
+                  Refresh Gold/Silver Prices
+                </button>
+              </div>
+
+              {/* Current Prices Display */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                <div className="text-center sm:text-left">
+                  <span className="text-sm font-medium text-gray-700">Current Gold Price:</span>
+                  <span className="ml-2 text-sm font-semibold text-amber-600">
+                    {formatCurrency(parseNumber(goldPrice))}/gram
+                    {loading && <Loader2 className="w-3 h-3 animate-spin inline ml-1" />}
+                  </span>
+                </div>
+                <div className="text-center sm:text-right">
+                  <span className="text-sm font-medium text-gray-700">Current Silver Price:</span>
+                  <span className="ml-2 text-sm font-semibold text-gray-600">
+                    {formatCurrency(parseNumber(silverPrice))}/gram
+                    {loading && <Loader2 className="w-3 h-3 animate-spin inline ml-1" />}
+                  </span>
+                </div>
+              </div>
 
               {/* Horizontal grid: 1 col mobile, 2 on sm, 4 on md+ */}
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
@@ -229,7 +335,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={cash}
                     onChange={(e) => setCash(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -240,7 +347,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={bank}
                     onChange={(e) => setBank(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -251,7 +359,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={investments}
                     onChange={(e) => setInvestments(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -262,7 +371,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={businessAssets}
                     onChange={(e) => setBusinessAssets(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -273,7 +383,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={goldGrams}
                     onChange={(e) => setGoldGrams(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -284,7 +395,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={goldPrice}
                     onChange={(e) => setGoldPrice(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50"
+                    placeholder="6000"
                   />
                 </div>
 
@@ -295,7 +407,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={silverGrams}
                     onChange={(e) => setSilverGrams(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -306,7 +419,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={silverPrice}
                     onChange={(e) => setSilverPrice(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-gray-50"
+                    placeholder="80"
                   />
                 </div>
 
@@ -318,7 +432,8 @@ export default function CTA() {
                     inputMode="numeric"
                     value={debts}
                     onChange={(e) => setDebts(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="0"
                   />
                 </div>
 
@@ -327,7 +442,7 @@ export default function CTA() {
                   <select
                     value={useGoldNisab ? 'gold' : 'silver'}
                     onChange={(e) => setUseGoldNisab(e.target.value === 'gold')}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
                   >
                     <option value="gold">Gold (recommended)</option>
                     <option value="silver">Silver</option>
@@ -341,62 +456,98 @@ export default function CTA() {
                     inputMode="numeric"
                     value={nisabGrams}
                     onChange={(e) => setNisabGrams(e.target.value)}
-                    className="mt-1 w-full border rounded-md px-3 py-2 text-black"
+                    className="mt-1 w-full border rounded-md px-3 py-2 text-black focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    placeholder="87.48"
                   />
                 </div>
 
               </div>
 
               {/* actions */}
-              <div className="flex items-center gap-3 pt-4">
-                <button type="submit" className="bg-emerald-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-emerald-700 transition">
-                  Calculate
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-4">
+                <button type="button" onClick={resetForm} className="w-full sm:w-auto border px-4 py-2 rounded-md hover:bg-gray-50 transition text-black font-medium">
+                  Reset Form
                 </button>
 
-                <button type="button" onClick={resetForm} className="border px-4 py-2 rounded-md hover:bg-grey-50 transition text-black">
-                  Reset
-                </button>
-
-                <button type="button" onClick={() => setModalOpen(false)} className="ml-auto text-sm text-black hover:underline">
-                  Close
+                <button type="button" onClick={() => setModalOpen(false)} className="w-full sm:w-auto ml-auto text-sm text-black hover:underline font-medium">
+                  Close Calculator
                 </button>
               </div>
 
               {/* result */}
               {result && (
-                <div className="mt-4 p-4 border rounded-md bg-gray-50">
+                <div className="mt-6 p-4 border rounded-lg bg-gray-50 border-emerald-200">
                   <div className="flex items-start gap-3">
-                    <div className="text-emerald-600">
+                    <div className="text-emerald-600 mt-1">
                       <CheckCircle className="w-6 h-6" />
                     </div>
-                    <div className="text-black">
-                      <p className="text-sm">
-                        Total assets: <span className="font-medium">{formatCurrency(result.totalAssets)}</span>
-                      </p>
-                      <p className="text-sm">
-                        Total liabilities: <span className="font-medium">{formatCurrency(result.totalLiabilities)}</span>
-                      </p>
-                      <p className="text-sm">
-                        Net zakatable wealth: <span className="font-medium">{formatCurrency(result.netZakatable)}</span>
-                      </p>
-                      <p className="text-sm">
-                        Nisab value ({useGoldNisab ? 'gold' : 'silver'} basis): <span className="font-medium">{formatCurrency(result.nisabValue)}</span>
-                      </p>
+                    <div className="text-black flex-1">
+                      <h4 className="font-semibold text-lg mb-3 text-emerald-700">Zakat Calculation Result</h4>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                        <div className="space-y-2">
+                          <p className="text-sm flex justify-between">
+                            <span>Total Assets:</span>
+                            <span className="font-medium">{formatCurrency(result.totalAssets)}</span>
+                          </p>
+                          <p className="text-sm flex justify-between">
+                            <span>Total Liabilities:</span>
+                            <span className="font-medium">{formatCurrency(result.totalLiabilities)}</span>
+                          </p>
+                          <p className="text-sm flex justify-between">
+                            <span>Net Zakatable Wealth:</span>
+                            <span className="font-medium">{formatCurrency(result.netZakatable)}</span>
+                          </p>
+                          <p className="text-sm flex justify-between">
+                            <span>Nisab Value ({useGoldNisab ? 'gold' : 'silver'}):</span>
+                            <span className="font-medium">{formatCurrency(result.nisabValue)}</span>
+                          </p>
+                        </div>
+                        
+                        <div className="flex items-center justify-center">
+                          {result.isAboveNisab ? (
+                            <div className="text-center">
+                              <p className="text-2xl font-bold text-emerald-700 mb-2">
+                                {formatCurrency(result.zakatDue)}
+                              </p>
+                              <p className="text-sm font-semibold text-emerald-600">
+                                Zakat Due (2.5%)
+                              </p>
+                            </div>
+                          ) : (
+                            <div className="text-center">
+                              <p className="text-lg font-semibold text-orange-600 mb-2">
+                                Below Nisab Threshold
+                              </p>
+                              <p className="text-sm text-orange-600">
+                                Zakat is not due
+                              </p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
 
-                      {result.isAboveNisab ? (
-                        <p className="mt-2 text-sm font-semibold text-emerald-700">
-                          Zakat due (2.5%): {formatCurrency(result.zakatDue)}
-                        </p>
-                      ) : (
-                        <p className="mt-2 text-sm font-semibold text-orange-600">
-                          Your net zakatable wealth is below the nisab, so zakat is not due.
-                        </p>
+                      {/* Pay Now Button - Only show if Zakat is due */}
+                      {result.isAboveNisab && result.zakatDue > 0 && (
+                        <div className="mt-4 pt-4 border-t border-emerald-200">
+                          <button
+                            onClick={handlePayNow}
+                            className="w-full bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-emerald-700 transition flex items-center justify-center gap-2 shadow-md"
+                          >
+                            <HandCoins className="w-5 h-5" />
+                            Pay Zakat Now - {formatCurrency(result.zakatDue)}
+                            <ArrowRight className="w-5 h-5" />
+                          </button>
+                          <p className="text-xs text-center text-gray-600 mt-2">
+                            100% of your Zakat goes directly to those in need
+                          </p>
+                        </div>
                       )}
                     </div>
                   </div>
                 </div>
               )}
-            </form>
+            </div>
           </div>
         </div>
       )}

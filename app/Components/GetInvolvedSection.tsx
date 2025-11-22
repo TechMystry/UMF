@@ -26,7 +26,7 @@ export default function GetInvolvedSection() {
     {
       icon: <MessageCircle className="w-8 h-8" />,
       title: "Partner With Us",
-      description: "If you're part of an organization, let's collaborate and amplify the change we create together.",
+      description: "If you're part of an organization, let’s collaborate and strategically amplify the positive change we create together.",
       action: "Contact",
     },
   ];
@@ -46,7 +46,7 @@ export default function GetInvolvedSection() {
   };
 
   return (
-    <section id="get-involved" className="py-20 px-4 sm:px-6 lg:px-8 bg-white relative">
+    <section id="get-involved" className="py-20 px-4 sm:px-6 lg:px-8 bg-white relative -mt-12 md:-mt-16">
       <div className="max-w-7xl mx-auto">
 
         {/* Heading */}

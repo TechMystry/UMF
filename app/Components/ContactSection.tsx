@@ -90,7 +90,7 @@ export default function ContactSection() {
               <div>
                 <h3 className="text-lg font-semibold text-gray-900">Get in touch</h3>
                 <p className="text-sm text-gray-600 mt-1 max-w-sm">
-                  We’re here to help — contact us about Zakat, donations, volunteering or partnerships.
+                  We’re here to help contact us about Zakat, donations, volunteering or partnerships.
                 </p>
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function ContactSection() {
 
             <div className="mt-6 border-t pt-6">
               <div className="text-sm text-gray-700">Office</div>
-              <div className="text-sm text-gray-500 mt-1">Mohol, Solapur, Maharashtra, India</div>
+              <div className="text-sm text-gray-500 mt-1">Maharashtra, India</div>
             </div>
           </aside>
 
@@ -149,8 +149,6 @@ export default function ContactSection() {
 
               <div className="hidden sm:flex items-center text-sm text-gray-500">
                 <div className="flex items-center gap-2">
-                  <div className="text-xs font-medium text-gray-400">Security</div>
-                  <div className="text-xs px-2 py-1 rounded-full bg-gray-50 border border-gray-100 text-gray-600">GDPR</div>
                 </div>
               </div>
             </div>
@@ -164,9 +162,11 @@ export default function ContactSection() {
                     name="name"
                     value={form.name}
                     onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
+                    className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm text-black 
+                    placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
                       errors.name ? 'border-rose-400' : 'border-gray-200'
                     }`}
+
                     placeholder="Your full name"
                     aria-invalid={!!errors.name}
                     aria-describedby={errors.name ? 'name-error' : undefined}
@@ -182,9 +182,11 @@ export default function ContactSection() {
                     type="email"
                     value={form.email}
                     onChange={handleChange}
-                    className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
+                    className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm text-black
+                    placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
                       errors.email ? 'border-rose-400' : 'border-gray-200'
                     }`}
+
                     placeholder="you@domain.com"
                     aria-invalid={!!errors.email}
                     aria-describedby={errors.email ? 'email-error' : undefined}
@@ -200,9 +202,11 @@ export default function ContactSection() {
                   name="topic"
                   value={form.topic}
                   onChange={handleChange}
-                  className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
+                  className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm text-black
+                  placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
                     errors.topic ? 'border-rose-400' : 'border-gray-200'
                   }`}
+
                   aria-invalid={!!errors.topic}
                   aria-describedby={errors.topic ? 'topic-error' : undefined}
                 >
@@ -224,9 +228,11 @@ export default function ContactSection() {
                   value={form.message}
                   onChange={handleChange}
                   rows={6}
-                  className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
+                  className={`mt-1 block w-full rounded-md border px-3 py-2 text-sm text-black
+                  placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-300 ${
                     errors.message ? 'border-rose-400' : 'border-gray-200'
                   }`}
+
                   placeholder="Provide a brief description (what you'd like help with)..."
                   aria-invalid={!!errors.message}
                   aria-describedby={errors.message ? 'message-error' : undefined}
@@ -254,11 +260,6 @@ export default function ContactSection() {
                 >
                   Reset
                 </button>
-
-                <div className="ml-auto text-sm text-gray-500 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-500" />
-                  <span>Secure & private</span>
-                </div>
               </div>
 
               {/* server error or success */}
@@ -273,7 +274,7 @@ export default function ContactSection() {
                 {success && (
                   <div className="inline-flex items-start gap-3 bg-emerald-50 border border-emerald-100 text-emerald-700 px-4 py-3 rounded-md">
                     <CheckCircle className="w-5 h-5" />
-                    <div className="text-sm">Thanks — your message has been sent. We’ll contact you shortly.</div>
+                    <div className="text-sm">Thanks your message has been sent. We’ll contact you shortly.</div>
                   </div>
                 )}
               </div>

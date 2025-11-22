@@ -46,7 +46,7 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-2 text-emerald-300">
               <Heart className="w-5 h-5 fill-current" />
-              <span className="font-medium text-sm">Trusted by thousands worldwide</span>
+              <span className="font-medium text-sm">Trusted by thousands</span>
             </div>
           </div>
 
@@ -70,7 +70,6 @@ export default function Footer() {
               <div className="flex items-start gap-3">
                 <MapPin className="w-6 h-6 text-emerald-400 mt-1" />
                 <div>
-                  <p>Mohol, Solapur</p>
                   <p className="text-gray-300">Maharashtra, India</p>
                 </div>
               </div>
@@ -106,7 +105,7 @@ export default function Footer() {
             <p className="flex items-center gap-1.5">
               Developed with <Heart className="w-4 h-4 fill-emerald-400 text-emerald-400" /> by{' '}
               <a
-                href="https://wa.me/918805526198"
+                href="https://tech-mystry.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-medium text-emerald-300 hover:text-yellow-300 transition-colors"

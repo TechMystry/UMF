@@ -9,17 +9,17 @@ export default function OurServices() {
     {
       icon: <Utensils className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16" />,
       title: "Feed the Hungry",
-      description: "We provide hot, nutritious meals to families who haven’t eaten properly in days — your Sadaqah becomes their hope."
+      description: "We provide hot, nutritious meals to families who haven’t eaten properly in days your Sadaqah becomes their hope."
     },
     {
       icon: <BookOpen className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16" />,
       title: "Education",
-      description: "Sponsor an orphan’s schooling — books, uniform, and fees — so they can dream of a better tomorrow."
+      description: "Sponsor an orphan’s schooling books, uniform, and fees so they can dream of a better tomorrow."
     },
     {
       icon: <Droplets className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16" />,
       title: "Clean Water",
-      description: "Build hand pumps and water wells that give pure water to entire villages — flowing Sadaqah Jariyah for decades."
+      description: "Build hand pumps and water wells that give pure water to entire villages flowing Sadaqah Jariyah for decades."
     },
     {
       icon: <HeartHandshake className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16" />,
@@ -29,7 +29,7 @@ export default function OurServices() {
   ];
 
   return (
-    <section id="services" className="py-16 sm:py-20 lg:py-28 bg-white overflow-hidden">
+    <section id="services" className="py-16 sm:py-20 lg:py-28 bg-white overflow-hidden -mt-12 md:-mt-16">
       <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-8 w-full">
 
         {/* Header */}

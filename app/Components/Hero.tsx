@@ -3,13 +3,11 @@
 import React, { useState } from "react";
 import { CheckCircle2, Heart, Users, Globe } from "lucide-react";
 import { motion } from "framer-motion";
-import AnimatedDonateMockup from "./AnimatedDonateMockup";
-
 export default function NGOHeroSection() {
   const [donationAmount, setDonationAmount] = useState("50");
 
   return (
-    <div id='hero' className="min-h-screen bg-white flex flex-col relative">
+    <div id='hero' className="min-h-screen bg-white flex flex-col relative -mt-12 md:-mt-16">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5 pointer-events-none">
         <div
@@ -76,33 +74,6 @@ export default function NGOHeroSection() {
                 <button className="border-2 border-emerald-600 text-emerald-600 px-8 py-4 rounded-full font-semibold hover:bg-emerald-50 transition-all duration-300 text-base sm:text-lg">
                   Learn More
                 </button>
-              </motion.div>
-
-              {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.8 }}
-                className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 justify-center lg:justify-start max-w-2xl mx-auto lg:mx-0"
-              >
-                <div className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                  <div className="bg-green-100 rounded-full p-2 flex-shrink-0">
-                    <CheckCircle2 className="w-5 h-5 text-green-500" />
-                  </div>
-                  <span className="text-gray-700 font-semibold text-sm sm:text-base">100% Trustable</span>
-                </div>
-                <div className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                  <div className="bg-emerald-100 rounded-full p-2 flex-shrink-0">
-                    <Users className="w-5 h-5 text-emerald-500" />
-                  </div>
-                  <span className="text-gray-700 font-semibold text-sm sm:text-base">Full Transparency</span>
-                </div>
-                <div className="flex items-center gap-3 bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
-                  <div className="bg-purple-100 rounded-full p-2 flex-shrink-0">
-                    <Globe className="w-5 h-5 text-purple-500" />
-                  </div>
-                  <span className="text-gray-700 font-semibold text-sm sm:text-base">Global Impact</span>
-                </div>
               </motion.div>
             </motion.div>
 
