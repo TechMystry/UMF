@@ -1,11 +1,15 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   // state to keep current moment (updates each second)
   const [now, setNow] = useState<Date>(new Date());
   const [open, setOpen] = useState(false);
+
+  // New: donate modal state
+  const [showDonateModal, setShowDonateModal] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -53,6 +57,10 @@ export default function Header() {
   };
 
   const hijri = getHijri(now);
+
+  // toggle handlers for donate modal
+  const openDonateModal = () => setShowDonateModal(true);
+  const closeDonateModal = () => setShowDonateModal(false);
 
   return (
     <header id="header" className="relative">
@@ -110,9 +118,20 @@ export default function Header() {
               <a href="#hero" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium text-sm">Home</a>
               <a href="#about" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium text-sm">About</a>
               <a href="#services" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium text-sm">Causes</a>
-              <a href="#blog" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium text-sm">Blog</a>
+              {/* Blog uses Link so it opens the full blog route */}
+              <Link href="/Blogs" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium text-sm">Blog</Link>
               <a href="#contact" className="text-gray-700 hover:text-emerald-600 transition-colors font-medium text-sm">Contact</a>
-              <a href="#cta" className="bg-emerald-600 text-white px-4 py-1.5 rounded-full font-semibold hover:bg-emerald-700 transition-all text-sm">Donate</a>
+
+              {/* Donate button — now opens modal with two options */}
+              <button
+                onClick={openDonateModal}
+                className="bg-emerald-600 text-white px-4 py-1.5 rounded-full font-semibold hover:bg-emerald-700 transition-all text-sm"
+                aria-haspopup="dialog"
+                aria-expanded={showDonateModal}
+                aria-controls="donate-modal"
+              >
+                Donate
+              </button>
             </nav>
 
             {/* Mobile menu button */}
@@ -141,9 +160,17 @@ export default function Header() {
               <a href="#hero" className="text-gray-700 py-2">Home</a>
               <a href="#about" className="text-gray-700 py-2">About</a>
               <a href="#services" className="text-gray-700 py-2">Causes</a>
-              <a href="#blog" className="text-gray-700 py-2">Blog</a>
+              {/* mobile blog link uses an anchor so we wrap Link as block below */}
+              <Link href="/Blogs" className="text-gray-700 py-2 block">Blog</Link>
               <a href="#contact" className="text-gray-700 py-2">Contact</a>
-              <a href="#cta" className="bg-emerald-600 text-white text-center py-2 rounded-full mt-1">Donate</a>
+
+              {/* Mobile donate entry — opens same modal */}
+              <button
+                onClick={openDonateModal}
+                className="bg-emerald-600 text-white text-center py-2 rounded-full mt-1"
+              >
+                Donate
+              </button>
 
               {/* condensed timing row for small screens */}
               <div className="pt-2 border-t border-emerald-50 text-xs text-gray-600">
@@ -155,6 +182,54 @@ export default function Header() {
 
         </div>
       </div>
+
+      {/* Donate modal (no other changes to header) */}
+      {showDonateModal && (
+        <div
+          id="donate-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="donate-modal-title"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4 py-6"
+        >
+          <div className="bg-white rounded-2xl max-w-md w-full overflow-hidden shadow-2xl">
+            <div className="p-4 border-b">
+              <h3 id="donate-modal-title" className="text-lg font-semibold text-gray-900">Donate</h3>
+              <p className="text-sm text-gray-600 mt-1">Choose how you want to give</p>
+            </div>
+
+            <div className="p-4 grid grid-cols-1 gap-4">
+              {/* image from uploaded file (local path supplied) */}
+              <div className="w-full flex items-center justify-center">
+                <img
+                  src="/D1.png"
+                  alt="donate visual"
+                  className="w-full max-w-xs object-contain rounded-md"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <Link href="/register" className="flex-1 inline-flex items-center justify-center gap-2 bg-emerald-700 hover:bg-emerald-800 text-white px-4 py-2 rounded-full font-semibold transition">
+                  Register & Donate
+                </Link>
+
+                <Link href="/donate/quick" className="flex-1 inline-flex items-center justify-center gap-2 border border-emerald-600 text-emerald-700 px-4 py-2 rounded-full font-semibold transition">
+                  Quick Donate
+                </Link>
+              </div>
+
+              <div className="pt-2">
+                <button
+                  onClick={closeDonateModal}
+                  className="w-full text-sm text-gray-600 hover:underline"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }
