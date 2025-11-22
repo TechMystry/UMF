@@ -25,7 +25,7 @@ export default function Footer() {
       id="footer"
       className="relative text-white overflow-hidden bg-cover bg-center bg-fixed min-h-screen"
       style={{
-        backgroundImage: "url('/footer_bg_img.jpg')",
+        backgroundImage: "url('/Footer_bg_img.jpg')",
       }}
     >
       {/* Dark overlay for main content */}
